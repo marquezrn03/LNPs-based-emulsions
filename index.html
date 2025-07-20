@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive LNP-stabilized Pickering Emulsions Data Explorer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .control-panel label {
+            color: #cbd5e1; /* slate-300 */
+        }
+        .control-panel select, .control-panel input {
+            background-color: #334155; /* slate-700 */
+            color: #f1f5f9; /* slate-100 */
+            border-color: #475569; /* slate-600 */
+        }
+        .plotly .modebar {
+            background-color: transparent !important;
+        }
+        .plotly .modebar-btn path {
+            fill: #94a3b8 !important; /* slate-400 */
+        }
+        .plot-container {
+             background-color: rgba(15, 23, 42, 0.7); /* slate-900 with some transparency */
+             border-radius: 0.5rem;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-200">
+
+    <div class="container mx-auto p-4 md:p-6">
+        <header class="text-center mb-10">
+            <h1 class="text-3xl md:text-5xl font-bold text-white tracking-tight">
+                Lignin Nanoparticles as Pickering Stabilizers: Emulsion Engineering through Physicochemical Design
+            </h1>
+            <p class="text-md text-slate-300 mt-6 max-w-5xl mx-auto">
+                Ronald Marquez<sup>1</sup>, Roberto J. Aguado<sup>1</sup>, Quim Tarrés<sup>1</sup>, Laura Tolosa<sup>2</sup>, Blaise L. Tardy<sup>3,*</sup>, Orlando J. Rojas<sup>4,5,6,*</sup>, Martin A. Hubbe<sup>7,*</sup>, Marc Delgado Aguilar<sup>1,*</sup>
+            </p>
+             <div class="mt-8 text-left max-w-4xl mx-auto bg-slate-800/50 p-4 rounded-lg ring-1 ring-white/10">
+                <h2 class="text-xl font-semibold text-sky-400 mb-2">Abstract</h2>
+                <p class="text-slate-400 text-base">
+                    This critical review systematically examines the key physicochemical parameters influencing the formation, stability, and properties of Pickering emulsions stabilized by lignin nanoparticles (LNPs), considering oil fraction, nanoparticle size, concentration, surface charge, and emulsification variables (pH and shearing method). We demonstrate the broad applicability of fundamental physical chemistry principles in explaining the long-term stability of LNP-stabilized Pickering emulsions. Several important correlations were identified: (1) smaller LNPs or higher LNP concentrations led to smaller emulsion droplets and improved stability; (2) with few exceptions, emulsions stabilized by LNPs ranging from 25–50 nm remained stable for over six months at concentrations between 0.2 and 2 wt.%; (3) LNPs larger than 1 µm produced droplets exceeding 25 µm, accompanied by reduced stability; (4) emulsions were more stable at acidic to neutral pH values (pH 3–7), with some formulations at pH 6 remaining stable for over three months with minimal sedimentation, whereas complete phase separation was sometimes observed at pH 3; (5) greater negative zeta potentials (up to −64 mV) correlated with enhanced colloidal stability due to the electrostatic repulsion between particles; (6) chemical modifications such as acetylation and polymer grafting significantly enhanced emulsion stability by balancing LNP surface hydrophilicity and interfacial activity; and (7) high-energy emulsification methods, including ultrasonication and high-shear mixing, produced smaller droplets and more stable emulsions. Based on these insights, we propose practical heuristics to tailor LNP-stabilized Pickering emulsions for emerging applications requiring enhanced stability and functionality, including agriculture and crop protection, food additives, nutraceuticals, stimuli-responsive formulations, energy systems, and advanced packaging coatings.
+                </p>
+            </div>
+        </header>
+
+        <main class="space-y-10">
+            <section class="bg-slate-800/50 p-6 rounded-xl shadow-2xl ring-1 ring-white/10">
+                <h2 class="text-2xl font-semibold mb-4 text-white border-b border-slate-700 pb-3">1. LNP Emulsion Data Explorer</h2>
+                <p class="text-slate-400 mb-6 text-base">
+                    Explore the relationship between any two variables from the database. Use the dropdown menus to select parameters for the X and Y axes. You can color the data points by a specific category (e.g., Lignin Type) and filter the data to isolate subsets of interest. Check the "Log" boxes to switch to a logarithmic scale. Click on any point to open the original article in a new tab.
+                </p>
+                <div class="control-panel grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+                    <div>
+                        <label for="x-axis-select" class="block text-sm font-medium">X-Axis:</label>
+                        <select id="x-axis-select" class="mt-1 block w-full pl-3 pr-10 py-2 text-base focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"></select>
+                    </div>
+                    <div>
+                        <label for="y-axis-select" class="block text-sm font-medium">Y-Axis:</label>
+                        <select id="y-axis-select" class="mt-1 block w-full pl-3 pr-10 py-2 text-base focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"></select>
+                    </div>
+                    <div>
+                        <label for="color-by-select" class="block text-sm font-medium">Color By:</label>
+                        <select id="color-by-select" class="mt-1 block w-full pl-3 pr-10 py-2 text-base focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"></select>
+                    </div>
+                    <div>
+                        <label for="filter-category-select" class="block text-sm font-medium">Filter Category:</label>
+                        <select id="filter-category-select" class="mt-1 block w-full pl-3 pr-10 py-2 text-base focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"></select>
+                    </div>
+                    <div>
+                        <label for="filter-value-select" class="block text-sm font-medium">Filter Value:</label>
+                        <select id="filter-value-select" class="mt-1 block w-full pl-3 pr-10 py-2 text-base focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"></select>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center mb-6">
+                    <div class="flex space-x-4">
+                        <label class="flex items-center space-x-2 text-sm cursor-pointer">
+                            <input type="checkbox" id="log-x-checkbox" class="h-4 w-4 rounded bg-slate-700 border-slate-600 text-indigo-600 focus:ring-indigo-500">
+                            <span>Log X-Axis</span>
+                        </label>
+                        <label class="flex items-center space-x-2 text-sm cursor-pointer">
+                            <input type="checkbox" id="log-y-checkbox" class="h-4 w-4 rounded bg-slate-700 border-slate-600 text-indigo-600 focus:ring-indigo-500">
+                            <span>Log Y-Axis</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div id="interactive-scatter" class="w-full h-[600px] plot-container"></div>
+            </section>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                <section class="bg-slate-800/50 p-6 rounded-xl shadow-2xl ring-1 ring-white/10">
+                    <h2 class="text-2xl font-semibold mb-4 text-white border-b border-slate-700 pb-3">2. Droplet Size Distribution</h2>
+                     <p class="text-slate-400 mb-6 text-base">
+                        This box plot shows the distribution of the emulsion droplet size (in micrometers) grouped by different categories. It allows for a visual comparison of how a categorical variable (e.g., Lignin Type, Oil Type) influences the median droplet size and the variability of results reported in the literature.
+                    </p>
+                    <div class="control-panel grid grid-cols-1 gap-4 mb-6">
+                        <div>
+                            <label for="dist-category-select" class="block text-sm font-medium">Group By:</label>
+                            <select id="dist-category-select" class="mt-1 block w-full pl-3 pr-10 py-2 text-base focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"></select>
+                        </div>
+                    </div>
+                    <div id="distribution-plot" class="w-full h-[500px] plot-container"></div>
+                </section>
+                
+                <section class="bg-slate-800/50 p-6 rounded-xl shadow-2xl ring-1 ring-white/10">
+                    <h2 class="text-2xl font-semibold mb-4 text-white border-b border-slate-700 pb-3">3. Correlation Matrix</h2>
+                    <p class="text-slate-400 mb-6 text-base">
+                        This heatmap visualizes the Pearson correlation coefficient between all numerical variables in the database. Warm colors (red) indicate a strong positive correlation, while cool colors (blue) indicate a strong negative correlation. A value near zero (white) suggests an absence of a linear correlation.
+                    </p>
+                    <div id="heatmap-plot" class="w-full h-[552px] plot-container"></div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <footer class="text-center mt-12 mb-6 text-slate-500 text-xs">
+        <div class="max-w-4xl mx-auto text-left space-y-1">
+            <p><sup>1</sup> LEPAMAP-PRODIS Research Group, University of Girona, C/ Maria Aurèlia Capmany, 61, 17003 Girona, Spain</p>
+            <p><sup>2</sup> School of Chemical Engineering, University of Los Andes, 5101 Merida, Venezuela</p>
+            <p><sup>3</sup> Department of Chemical & Petroleum Engineering, Khalifa University of Science & Technology, Abu Dhabi 127788, United Arab Emirates</p>
+            <p><sup>4</sup> Bioproducts Institute, Department of Chemical and Biological Engineering, The University of British Columbia, 2360 East Mall, Vancouver, BC V6T 1Z3, Canada.</p>
+            <p><sup>5</sup> Department of Chemistry, The University of British Columbia, 2036 Main Mall, Vancouver, BC V6T 1Z1, Canada.</p>
+            <p><sup>6</sup> Department of Wood Science, The University of British Columbia, 2424 Main Mall #2900, Vancouver, BC V6T 1Z4, Canada</p>
+            <p><sup>7</sup> Department of Forest Biomaterials, North Carolina State University, Box 8005, Raleigh, NC 27695-8005, USA</p>
+            <p class="mt-4"><sup>*</sup>Corresponding authors: orlando.rojas@ubc.ca, hubbe@ncsu.edu, m.delgado@udg.edu</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- DATA SOURCE FROM LNP PAPER ---
+            const database = [
+                // Unmodified Lignin Data (Table 1)
+                { 'DOI': '10.1039/C2GC36278C', 'Reference': 'Wei 2012', 'Lignin_Type': 'Alkali', 'Modification': 'Unmodified', 'Particle_Size_nm': 182, 'Zeta_Potential_mV': -4.14, 'Lignin_Concentration_wt_percent': 0.5, 'Oil_Type': 'Styrene', 'pH': 3, 'Droplet_Size_um': 31.65, 'Stability': '>6 months' },
+                { 'DOI': '10.1021/acsami.6b07900', 'Reference': 'Ago 2016', 'Lignin_Type': 'Kraft', 'Modification': 'Unmodified', 'Particle_Size_nm': 356, 'Zeta_Potential_mV': -40, 'Lignin_Concentration_wt_percent': 0.3, 'Oil_Type': 'Kerosene', 'pH': null, 'Droplet_Size_um': 5.7, 'Stability': '>2 months' },
+                { 'DOI': '10.1021/acsami.6b07900', 'Reference': 'Ago 2016', 'Lignin_Type': 'Organosolv', 'Modification': 'Unmodified', 'Particle_Size_nm': 679, 'Zeta_Potential_mV': -38, 'Lignin_Concentration_wt_percent': 0.3, 'Oil_Type': 'Kerosene', 'pH': null, 'Droplet_Size_um': null, 'Stability': '>2 months' },
+                { 'DOI': '10.1016/j.indcrop.2019.111591', 'Reference': 'Bertolo 2019', 'Lignin_Type': 'Alkali', 'Modification': 'Unmodified', 'Particle_Size_nm': 115.9, 'Zeta_Potential_mV': -27.0, 'Lignin_Concentration_wt_percent': 0.2, 'Oil_Type': 'Olive Oil', 'pH': null, 'Droplet_Size_um': 25, 'Stability': null },
+                { 'DOI': '10.1016/j.indcrop.2022.115651', 'Reference': 'Zhang 2022', 'Lignin_Type': 'Kraft', 'Modification': 'Unmodified', 'Particle_Size_nm': 60, 'Zeta_Potential_mV': null, 'Lignin_Concentration_wt_percent': 0.2, 'Oil_Type': 'Toluene', 'pH': 9, 'Droplet_Size_um': null, 'Stability': 'Stable' },
+                { 'DOI': '10.1021/acssuschemeng.1c01021', 'Reference': 'Li 2021', 'Lignin_Type': 'Kraft', 'Modification': 'Unmodified', 'Particle_Size_nm': 28.5, 'Zeta_Potential_mV': -20, 'Lignin_Concentration_wt_percent': 0.2, 'Oil_Type': 'Thyme oil', 'pH': null, 'Droplet_Size_um': 5, 'Stability': null },
+                { 'DOI': '10.1016/j.colsurfa.2023.131287', 'Reference': 'Colucci 2023', 'Lignin_Type': 'Kraft', 'Modification': 'Unmodified', 'Particle_Size_nm': 300, 'Zeta_Potential_mV': -11, 'Lignin_Concentration_wt_percent': 0.5, 'Oil_Type': 'Miglyol 812', 'pH': 7, 'Droplet_Size_um': null, 'Stability': '>30 days' },
+                { 'DOI': '10.1021/acs.jafc.1c04787', 'Reference': 'Hong 2022', 'Lignin_Type': 'Alkyl Chain-Bridged', 'Modification': 'Unmodified', 'Particle_Size_nm': 40, 'Zeta_Potential_mV': null, 'Lignin_Concentration_wt_percent': 1.0, 'Oil_Type': 'Thyme Oil', 'pH': null, 'Droplet_Size_um': null, 'Stability': '>1 year' },
+                { 'DOI': '10.1016/j.molliq.2023.123030', 'Reference': 'Hadjiefstathiou 2023', 'Lignin_Type': 'pH fractionated', 'Modification': 'Unmodified', 'Particle_Size_nm': null, 'Zeta_Potential_mV': null, 'Lignin_Concentration_wt_percent': 2.5, 'Oil_Type': 'Almond Oil', 'pH': 6, 'Droplet_Size_um': 15, 'Stability': '>3 months' },
+                { 'DOI': '10.1002/adfm.202214911', 'Reference': 'Yu 2023', 'Lignin_Type': 'Kraft', 'Modification': 'Unmodified', 'Particle_Size_nm': 250, 'Zeta_Potential_mV': null, 'Lignin_Concentration_wt_percent': 0.1, 'Oil_Type': 'Olive oil', 'pH': null, 'Droplet_Size_um': 0.5, 'Stability': null },
+                { 'DOI': '10.1016/j.colsurfa.2023.131503', 'Reference': 'Tian 2023', 'Lignin_Type': 'Kraft', 'Modification': 'Unmodified', 'Particle_Size_nm': null, 'Zeta_Potential_mV': -45, 'Lignin_Concentration_wt_percent': 0.5, 'Oil_Type': 'Soybean oil', 'pH': 7, 'Droplet_Size_um': null, 'Stability': '>6 months' },
+                { 'DOI': '10.1007/s00396-024-05226-1', 'Reference': 'Pang 2024', 'Lignin_Type': 'Alkali', 'Modification': 'Unmodified', 'Particle_Size_nm': 354, 'Zeta_Potential_mV': null, 'Lignin_Concentration_wt_percent': 0.5, 'Oil_Type': 'Cyclohexane', 'pH': 4, 'Droplet_Size_um': 40, 'Stability': null },
+                { 'DOI': '10.1016/j.ijbiomac.2024.134278', 'Reference': 'El Bouhali 2024', 'Lignin_Type': 'Kraft', 'Modification': 'Unmodified', 'Particle_Size_nm': 15, 'Zeta_Potential_mV': -39, 'Lignin_Concentration_wt_percent': 0.5, 'Oil_Type': 'Wax', 'pH': null, 'Droplet_Size_um': 0.5, 'Stability': '>1 month' },
+                
+                // Modified Lignin Data (Table 2)
+                { 'DOI': '10.1039/C7GC02900D', 'Reference': 'Sipponen 2017', 'Lignin_Type': 'Kraft', 'Modification': 'Cationized', 'Particle_Size_nm': 274, 'Zeta_Potential_mV': 20, 'Lignin_Concentration_wt_percent': 0.5, 'Oil_Type': 'Toluene', 'pH': 4, 'Droplet_Size_um': 7.5, 'Stability': '1 week' },
+                { 'DOI': '10.1007/s10570-023-05399-y', 'Reference': 'Agustin 2023', 'Lignin_Type': 'Alkali', 'Modification': 'Cationized', 'Particle_Size_nm': 132, 'Zeta_Potential_mV': -54, 'Lignin_Concentration_wt_percent': 0.2, 'Oil_Type': 'Thyme Oil', 'pH': 8, 'Droplet_Size_um': 0.5, 'Stability': '>30 days' },
+                { 'DOI': '10.1016/j.ijbiomac.2023.124941', 'Reference': 'Borrero-López 2023', 'Lignin_Type': 'Kraft', 'Modification': 'Acetylated', 'Particle_Size_nm': 30, 'Zeta_Potential_mV': null, 'Lignin_Concentration_wt_percent': 8.0, 'Oil_Type': 'Sunflower Oil', 'pH': null, 'Droplet_Size_um': null, 'Stability': '>30 days' },
+                { 'DOI': '10.1002/cssc.202000965', 'Reference': 'Ghavidel & Fatehi 2020', 'Lignin_Type': 'Kraft', 'Modification': 'Sulfonated', 'Particle_Size_nm': 533, 'Zeta_Potential_mV': -10, 'Lignin_Concentration_wt_percent': 0.25, 'Oil_Type': 'Xylene', 'pH': 3, 'Droplet_Size_um': 4.5, 'Stability': 'Highly Stable' },
+                { 'DOI': '10.1021/acssuschemeng.2c04143', 'Reference': 'Shomali & Fatehi 2020', 'Lignin_Type': 'Kraft', 'Modification': 'Carboxyalkylated', 'Particle_Size_nm': 300, 'Zeta_Potential_mV': -45, 'Lignin_Concentration_wt_percent': 0.25, 'Oil_Type': 'Xylene', 'pH': 6, 'Droplet_Size_um': 3.47, 'Stability': 'Minimal Coalescence' },
+                { 'DOI': '10.1016/j.ijbiomac.2023.123143', 'Reference': 'Shorey & Mekonnen 2023', 'Lignin_Type': 'Kraft', 'Modification': 'Esterified', 'Particle_Size_nm': null, 'Zeta_Potential_mV': null, 'Lignin_Concentration_wt_percent': 0.2, 'Oil_Type': 'Various', 'pH': null, 'Droplet_Size_um': 2.02, 'Stability': null },
+
+                // Polymer-Grafted Lignin Data (Table 3)
+                { 'DOI': '10.1016/j.jcis.2015.11.042', 'Reference': 'Silmore 2016', 'Lignin_Type': 'Kraft', 'Modification': 'Polymer-Grafted (LPAM)', 'Particle_Size_nm': 10, 'Zeta_Potential_mV': null, 'Lignin_Concentration_wt_percent': 0.1, 'Oil_Type': 'Cyclohexane', 'pH': null, 'Droplet_Size_um': 100, 'Stability': '>1 month' },
+                { 'DOI': '10.1016/j.ijbiomac.2019.12.175', 'Reference': 'Wang 2020', 'Lignin_Type': 'Alkali', 'Modification': 'Polymer-Grafted (PNIPAM)', 'Particle_Size_nm': 160, 'Zeta_Potential_mV': null, 'Lignin_Concentration_wt_percent': null, 'Oil_Type': 'Sunflower Oil', 'pH': null, 'Droplet_Size_um': 10, 'Stability': 'Highly Stable' }
+            ];
+
+            let processedData = [];
+            const numericalCols = [
+                'Particle_Size_nm', 'Zeta_Potential_mV', 'Lignin_Concentration_wt_percent', 'pH', 'Droplet_Size_um'
+            ];
+            const categoricalCols = [
+                'Lignin_Type', 'Modification', 'Oil_Type', 'Stability', 'Reference'
+            ];
+            
+            function preprocessData(db) {
+                return db.map(d => {
+                    const processedEntry = { ...d };
+                    numericalCols.forEach(col => {
+                        if (processedEntry[col] === null || processedEntry[col] === undefined) {
+                            processedEntry[col] = NaN; // Use NaN for missing numerical data for calculations
+                        } else {
+                            processedEntry[col] = parseFloat(processedEntry[col]);
+                        }
+                    });
+                    return processedEntry;
+                });
+            }
+
+            function populateSelectors() {
+                const xSelect = document.getElementById('x-axis-select');
+                const ySelect = document.getElementById('y-axis-select');
+                const colorSelect = document.getElementById('color-by-select');
+                const filterCatSelect = document.getElementById('filter-category-select');
+                const distCatSelect = document.getElementById('dist-category-select');
+
+                [xSelect, ySelect, colorSelect, filterCatSelect, distCatSelect].forEach(s => s.innerHTML = '');
+
+                numericalCols.forEach(col => {
+                    xSelect.add(new Option(col, col));
+                    ySelect.add(new Option(col, col));
+                });
+
+                categoricalCols.forEach(col => {
+                    colorSelect.add(new Option(col, col));
+                    filterCatSelect.add(new Option(col, col));
+                    distCatSelect.add(new Option(col, col));
+                });
+                
+                xSelect.value = 'Particle_Size_nm';
+                ySelect.value = 'Droplet_Size_um';
+                colorSelect.value = 'Modification';
+                filterCatSelect.value = 'Lignin_Type';
+                distCatSelect.value = 'Lignin_Type';
+                
+                updateFilterValueOptions();
+            }
+            
+            function updateFilterValueOptions() {
+                const filterCat = document.getElementById('filter-category-select').value;
+                const filterValSelect = document.getElementById('filter-value-select');
+                filterValSelect.innerHTML = '<option value="All">All</option>';
+                
+                if (filterCat && processedData.length > 0) {
+                    const uniqueValues = [...new Set(processedData.map(d => d[filterCat]))].filter(v => v);
+                    uniqueValues.sort().forEach(val => {
+                        filterValSelect.add(new Option(val, val));
+                    });
+                }
+            }
+            
+            function getFilteredData() {
+                const filterCat = document.getElementById('filter-category-select').value;
+                const filterVal = document.getElementById('filter-value-select').value;
+                if (filterVal === 'All' || !filterCat) {
+                    return processedData;
+                }
+                return processedData.filter(d => d[filterCat] == filterVal);
+            }
+
+            function updateAllPlots() {
+                updateScatterPlot();
+                updateDistributionPlot();
+                drawHeatmap();
+            }
+
+            // --- PLOTTING FUNCTIONS ---
+            function updateScatterPlot() {
+                const data = getFilteredData();
+                const xVar = document.getElementById('x-axis-select').value;
+                const yVar = document.getElementById('y-axis-select').value;
+                const colorVar = document.getElementById('color-by-select').value;
+                const logX = document.getElementById('log-x-checkbox').checked;
+                const logY = document.getElementById('log-y-checkbox').checked;
+
+                const traces = [];
+                const groups = [...new Set(data.map(d => d[colorVar]))];
+
+                groups.forEach(group => {
+                    const groupData = data.filter(d => d[colorVar] === group);
+                    traces.push({
+                        x: groupData.map(d => d[xVar]),
+                        y: groupData.map(d => d[yVar]),
+                        customdata: groupData.map(d => d.DOI),
+                        text: groupData.map(d => `<b>${d.Reference}</b><br>Lignin Type: ${d.Lignin_Type}<br>Modification: ${d.Modification}<br>DOI: ${d.DOI}<br>--------------------<br>${xVar}: ${d[xVar]}<br>${yVar}: ${d[yVar]}`),
+                        hoverinfo: 'text',
+                        mode: 'markers',
+                        type: 'scatter',
+                        name: group || 'N/A',
+                        marker: { size: 10, opacity: 0.8 }
+                    });
+                });
+
+                const layout = {
+                    xaxis: { title: xVar, type: logX ? 'log' : 'linear', autorange: true, gridcolor: '#475569', zerolinecolor: '#475569' },
+                    yaxis: { title: yVar, type: logY ? 'log' : 'linear', autorange: true, gridcolor: '#475569', zerolinecolor: '#475569' },
+                    showlegend: true,
+                    legend: { font: { color: '#e2e8f0' }, orientation: 'h', y: -0.2},
+                    paper_bgcolor: 'transparent',
+                    plot_bgcolor: 'transparent',
+                    font: { color: '#e2e8f0' },
+                    margin: { l: 60, r: 20, b: 60, t: 40 }
+                };
+                Plotly.react('interactive-scatter', traces, layout, {responsive: true});
+            }
+
+            function updateDistributionPlot() {
+                const data = getFilteredData();
+                const catVar = document.getElementById('dist-category-select').value;
+
+                const traces = [];
+                const groups = [...new Set(data.map(d => d[catVar]))].sort();
+
+                groups.forEach(group => {
+                    const groupData = data.filter(d => d[catVar] === group);
+                    traces.push({
+                        y: groupData.map(d => d.Droplet_Size_um).filter(v => !isNaN(v)),
+                        type: 'box',
+                        name: group || 'N/A',
+                        boxpoints: 'all',
+                        jitter: 0.5,
+                        pointpos: -1.8,
+                    });
+                });
+
+                const layout = {
+                    yaxis: { title: 'Droplet Size (μm)', zeroline: false, gridcolor: '#475569', type: 'log', autorange: true },
+                    xaxis: { title: catVar, tickangle: -45 },
+                    showlegend: false,
+                    paper_bgcolor: 'transparent',
+                    plot_bgcolor: 'transparent',
+                    font: { color: '#e2e8f0' },
+                    margin: { l: 60, r: 20, b: 120, t: 40 },
+                    colorway: ['#636EFA', '#EF553B', '#00CC96', '#AB63FA', '#FFA15A', '#19D3F3', '#FF6692', '#B6E880', '#FF97FF', '#FECB52']
+                };
+                Plotly.newPlot('distribution-plot', traces, layout, {responsive: true});
+            }
+
+            function drawHeatmap() {
+                const numData = processedData.map(row => {
+                    let newRow = {};
+                    numericalCols.forEach(col => {
+                        newRow[col] = (row[col] === null || row[col] === undefined || isNaN(row[col])) ? NaN : row[col];
+                    });
+                    return newRow;
+                });
+
+                const columns = numericalCols;
+                const matrix = [];
+                for (let i = 0; i < columns.length; i++) {
+                    const row = [];
+                    for (let j = 0; j < columns.length; j++) {
+                        const col1 = numData.map(d => d[columns[i]]);
+                        const col2 = numData.map(d => d[columns[j]]);
+                        row.push(calculateCorrelation(col1, col2));
+                    }
+                    matrix.push(row);
+                }
+
+                const trace = {
+                    z: matrix,
+                    x: columns,
+                    y: columns,
+                    type: 'heatmap',
+                    colorscale: 'RdBu',
+                    zmin: -1,
+                    zmax: 1
+                };
+
+                const layout = {
+                    title: '',
+                    paper_bgcolor: 'transparent',
+                    plot_bgcolor: 'transparent',
+                    font: { color: '#e2e8f0' },
+                    xaxis: { tickangle: -45 },
+                    margin: { l: 150, r: 20, b: 150, t: 40 }
+                };
+
+                Plotly.newPlot('heatmap-plot', [trace], layout, {responsive: true});
+            }
+
+            function calculateCorrelation(x, y) {
+                const validPairs = x.map((val, i) => [val, y[i]]).filter(([valX, valY]) => !isNaN(valX) && !isNaN(valY));
+                if (validPairs.length < 2) return 0;
+
+                const n = validPairs.length;
+                let sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0, sumY2 = 0;
+                
+                validPairs.forEach(([valX, valY]) => {
+                    sumX += valX;
+                    sumY += valY;
+                    sumXY += valX * valY;
+                    sumX2 += valX * valX;
+                    sumY2 += valY * valY;
+                });
+
+                const num = (n * sumXY) - (sumX * sumY);
+                const den = Math.sqrt(((n * sumX2) - (sumX * sumX)) * ((n * sumY2) - (sumY * sumY)));
+                return den === 0 ? 0 : num / den;
+            }
+
+            // --- INITIALIZATION & EVENT LISTENERS ---
+            function init() {
+                processedData = preprocessData(database);
+                populateSelectors();
+                
+                updateAllPlots();
+
+                const scatterPlot = document.getElementById('interactive-scatter');
+                scatterPlot.on('plotly_click', function(data) {
+                    if (data.points.length > 0) {
+                        const point = data.points[0];
+                        const doi = point.customdata;
+                        if (doi) {
+                            const url = `https://doi.org/${doi}`;
+                            const link = document.createElement('a');
+                            link.href = url;
+                            link.target = '_blank';
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                        }
+                    }
+                });
+
+                document.getElementById('x-axis-select').addEventListener('change', updateScatterPlot);
+                document.getElementById('y-axis-select').addEventListener('change', updateScatterPlot);
+                document.getElementById('color-by-select').addEventListener('change', updateScatterPlot);
+                document.getElementById('filter-category-select').addEventListener('change', () => {
+                    updateFilterValueOptions();
+                    updateAllPlots();
+                });
+                document.getElementById('filter-value-select').addEventListener('change', updateAllPlots);
+                document.getElementById('log-x-checkbox').addEventListener('change', updateScatterPlot);
+                document.getElementById('log-y-checkbox').addEventListener('change', updateScatterPlot);
+                document.getElementById('dist-category-select').addEventListener('change', updateDistributionPlot);
+            }
+            
+            init();
+        });
+    </script>
+</body>
+</html>
