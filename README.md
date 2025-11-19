@@ -1,6 +1,6 @@
 # Interactive LNP-stabilized Pickering Emulsions Data Explorer
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.XXXXXX.svg)](https://doi.org/10.5281/zenodo.XXXXXX)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17648662.svg)](https://doi.org/10.5281/zenodo.17648662)
 
 This repository contains the source code and curated dataset for the "Interactive LNP-stabilized Pickering Emulsions Data Explorer," a web-based tool designed to help researchers visualize and explore the scientific literature in the field of lignin nanoparticle-stabilized emulsions.
 
