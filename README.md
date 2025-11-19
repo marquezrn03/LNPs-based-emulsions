@@ -10,7 +10,7 @@ This work was developed by Ronald Marquez, Roberto J. Aguado, Quim Tarrés, Laur
 
 ### Online (Recommended)
 
-The easiest way to use the tool is to visit the live demo link: [https://marquezrn03.github.io/LNP-Pickering-Emulsions-Explorer/](https://marquezrn03.github.io/LNP-Pickering-Emulsions-Explorer/)
+The easiest way to use the tool is to visit the live demo link: [https://marquezrn03.github.io/LNPs-based-emulsions/](https://marquezrn03.github.io/LNPs-based-emulsions/)
 
 ## The Dataset
 
