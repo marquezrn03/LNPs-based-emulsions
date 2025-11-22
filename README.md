@@ -77,5 +77,3 @@ If you use this software or its dataset in your research, please cite it. This e
   url          = {[https://doi.org/10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX)}
 }
 
-📜 License
-The source code of this project is licensed under the MIT License.
